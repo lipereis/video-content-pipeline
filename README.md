@@ -4,6 +4,10 @@ Drop a video in a folder and get back a transcript, five opening hooks, a shot-b
 
 I edit short-form video for a living. Writing the hooks and captions for each clip was the part I kept postponing, so I automated the first draft.
 
+![The n8n workflow running on a 24-second clip](docs/workflow.gif)
+
+*A real run on a 24-second clip, about one minute end to end, sped up.*
+
 ```
 data/inbox/clip.mp4
       │
