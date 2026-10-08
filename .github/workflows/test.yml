@@ -1,0 +1,38 @@
+name: Tests
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/checkout@v4
+        with:
+          repository: lipereis/metis-content-strategist
+          ref: a8fca093c0092290a6a18038a73c12014f2d8f3b
+          path: metis
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+
+      - name: Install dependencies
+        run: pip install -r worker/requirements-dev.txt
+
+      # Whisper and the LLM are faked in the tests, so no model or API key is needed here.
+      - name: Worker tests
+        working-directory: worker
+        env:
+          METIS_PATH: ${{ github.workspace }}/metis
+        run: pytest tests -q
+
+      - name: Workflow file is valid JSON
+        run: python -c "import json; json.load(open('workflow/video-content-pipeline.json', encoding='utf-8'))"

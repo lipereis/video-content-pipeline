@@ -1,0 +1,37 @@
+services:
+  n8n:
+    image: docker.n8n.io/n8nio/n8n:${N8N_VERSION:-2.42.5}
+    ports:
+      - "5678:5678"
+    environment:
+      - GENERIC_TIMEZONE=America/Sao_Paulo
+      - TZ=America/Sao_Paulo
+      - N8N_DIAGNOSTICS_ENABLED=false
+    volumes:
+      - n8n_data:/home/node/.n8n
+      - ./workflow:/workflow:ro
+    depends_on:
+      - worker
+
+  worker:
+    build: ./worker
+    environment:
+      - DATA_DIR=/data
+      - TONE_FILE=/tone/${TONE:-creator}.yaml
+      - WHISPER_MODEL=${WHISPER_MODEL:-small}
+      # Any OpenAI-compatible endpoint works. The default is Ollama running on the host.
+      - METIS_LLM_BASE_URL=${LLM_BASE_URL:-http://host.docker.internal:11434/v1}
+      - METIS_LLM_MODEL=${LLM_MODEL:-qwen2.5:7b}
+      - METIS_LLM_API_KEY=${LLM_API_KEY:-ollama}
+      # A local model can take minutes to load on the first call.
+      - METIS_LLM_TIMEOUT=${LLM_TIMEOUT:-600}
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    volumes:
+      - ./data:/data
+      - ./tone:/tone:ro
+      - whisper_cache:/root/.cache/huggingface
+
+volumes:
+  n8n_data:
+  whisper_cache:

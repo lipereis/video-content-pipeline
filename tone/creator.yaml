@@ -1,0 +1,20 @@
+# Default tone for this pipeline: a creator talking to other people, not a company selling.
+# Point TONE_FILE at another file in this folder to change it.
+tone_id: "creator_direct"
+display_name: "Criador direto"
+language: "pt-BR"
+persona:
+  archetype: "Creator who explains what they saw or learned"
+  traits: ["direct", "concrete", "conversational", "honest"]
+  forbidden_words: ["revolucionário", "incrível", "segredo", "garantido", "clientes", "vendas"]
+  preferred_phrases: []
+structure_preferences:
+  hook_style: "curiosity"
+  cta_style: "question_driven"
+  emoji_usage: "none"
+  line_break_density: "high"
+platform_overrides:
+  linkedin:
+    cta_style: "question_driven"
+  instagram:
+    emoji_usage: "minimal"

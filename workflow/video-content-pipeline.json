@@ -1,0 +1,127 @@
+{
+  "id": "videoContentPipeline",
+  "name": "Vídeo → conteúdo (Whisper + Metis)",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": { "interval": [{ "field": "minutes", "minutesInterval": 1 }] }
+      },
+      "id": "a1f0c001-0000-4000-8000-000000000001",
+      "name": "A cada minuto",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [0, 0]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://worker:8000/claim",
+        "options": {}
+      },
+      "id": "a1f0c001-0000-4000-8000-000000000002",
+      "name": "Reservar vídeos novos",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [220, 0]
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "files",
+        "options": {}
+      },
+      "id": "a1f0c001-0000-4000-8000-000000000003",
+      "name": "Um item por vídeo",
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [440, 0]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://worker:8000/transcribe",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ file: $json.file }) }}",
+        "options": { "timeout": 3600000 }
+      },
+      "id": "a1f0c001-0000-4000-8000-000000000004",
+      "name": "Transcrever (Whisper)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [660, 0],
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://worker:8000/generate",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ file: $json.file, platforms: ['instagram', 'linkedin'] }) }}",
+        "options": { "timeout": 1800000 }
+      },
+      "id": "a1f0c001-0000-4000-8000-000000000005",
+      "name": "Gerar ganchos, roteiro e legendas (Metis)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [880, -100],
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://worker:8000/archive",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ file: $json.file, status: 'done' }) }}",
+        "options": {}
+      },
+      "id": "a1f0c001-0000-4000-8000-000000000006",
+      "name": "Arquivar em processados",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1100, -200]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://worker:8000/archive",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ file: $('Um item por vídeo').item.json.file, status: 'failed', reason: String($json.error?.message ?? $json.error ?? 'erro desconhecido') }) }}",
+        "options": {}
+      },
+      "id": "a1f0c001-0000-4000-8000-000000000007",
+      "name": "Arquivar em falhou",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1100, 120]
+    }
+  ],
+  "connections": {
+    "A cada minuto": {
+      "main": [[{ "node": "Reservar vídeos novos", "type": "main", "index": 0 }]]
+    },
+    "Reservar vídeos novos": {
+      "main": [[{ "node": "Um item por vídeo", "type": "main", "index": 0 }]]
+    },
+    "Um item por vídeo": {
+      "main": [[{ "node": "Transcrever (Whisper)", "type": "main", "index": 0 }]]
+    },
+    "Transcrever (Whisper)": {
+      "main": [
+        [{ "node": "Gerar ganchos, roteiro e legendas (Metis)", "type": "main", "index": 0 }],
+        [{ "node": "Arquivar em falhou", "type": "main", "index": 0 }]
+      ]
+    },
+    "Gerar ganchos, roteiro e legendas (Metis)": {
+      "main": [
+        [{ "node": "Arquivar em processados", "type": "main", "index": 0 }],
+        [{ "node": "Arquivar em falhou", "type": "main", "index": 0 }]
+      ]
+    }
+  },
+  "settings": { "executionOrder": "v1" },
+  "active": false,
+  "pinData": {}
+}
