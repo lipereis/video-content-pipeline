@@ -57,7 +57,7 @@
         "url": "http://worker:8000/generate",
         "sendBody": true,
         "specifyBody": "json",
-        "jsonBody": "={{ JSON.stringify({ file: $json.file, platforms: ['instagram', 'linkedin'] }) }}",
+        "jsonBody": "={{ JSON.stringify({ file: $json.file, platforms: ['instagram', 'tiktok'] }) }}",
         "options": { "timeout": 1800000 }
       },
       "id": "a1f0c001-0000-4000-8000-000000000005",

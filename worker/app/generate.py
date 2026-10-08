@@ -9,7 +9,7 @@ sys.path.insert(0, str(METIS_PATH / "scripts"))
 
 import module1_pipeline as metis  # noqa: E402
 
-DEFAULT_PLATFORMS = ["instagram", "linkedin"]
+DEFAULT_PLATFORMS = ["instagram", "tiktok"]
 
 
 def tone_path() -> Path:

@@ -1,6 +1,6 @@
 # video-content-pipeline
 
-Drop a video in a folder and get back a transcript, five opening hooks, a shot-by-shot script and captions for Instagram and LinkedIn, as a Markdown file ready to review. An n8n workflow runs the steps; everything runs on your machine, with no API key.
+Drop a video in a folder and get back a transcript, five opening hooks, a shot-by-shot script and captions for Instagram and TikTok, as a Markdown file ready to review. An n8n workflow runs the steps; everything runs on your machine, with no API key.
 
 I edit short-form video for a living. Writing the hooks and captions for each clip was the part I kept postponing, so I automated the first draft.
 

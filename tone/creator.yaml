@@ -14,7 +14,7 @@ structure_preferences:
   emoji_usage: "none"
   line_break_density: "high"
 platform_overrides:
-  linkedin:
+  tiktok:
     cta_style: "question_driven"
   instagram:
     emoji_usage: "minimal"

@@ -17,7 +17,7 @@ HOOK_TYPES = ["curiosity", "contrarian", "pain_point", "social_proof", "bold_sta
 def fake_llm(system: str, user: str) -> str:
     """Answers each Metis request according to the schema it asked for."""
     if '"hooks"' in system:
-        return json.dumps({"hooks": [{"hook_type": t, "text": f"hook {t}", "platform_fit": ["linkedin"]}
+        return json.dumps({"hooks": [{"hook_type": t, "text": f"hook {t}", "platform_fit": ["tiktok"]}
                                      for t in HOOK_TYPES]})
     if '"rows"' in system:
         return json.dumps({"rows": [{"time_range": f"{i * 5}-{i * 5 + 5}s", "voiceover": f"line {i}",
@@ -68,9 +68,9 @@ def test_full_run_writes_content_and_archives_the_video(client, folders):
     assert client.post("/claim").json() == {"files": [{"file": "clip.mp4"}]}
     transcribed = client.post("/transcribe", json={"file": "clip.mp4"}).json()
     assert transcribed["language"] == "en" and transcribed["chars"] > 0
-    generated = client.post("/generate", json={"file": "clip.mp4", "platforms": ["linkedin"]}).json()
+    generated = client.post("/generate", json={"file": "clip.mp4", "platforms": ["tiktok"]}).json()
     assert generated == {"file": "clip.mp4", "output_file": "clip.md", "hooks": 5, "script_rows": 6,
-                         "captions": ["linkedin"]}
+                         "captions": ["tiktok"]}
     archived = client.post("/archive", json={"file": "clip.mp4", "status": "done"}).json()
 
     assert archived["moved_to"] == "processados/clip.mp4"
