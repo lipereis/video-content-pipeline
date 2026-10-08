@@ -90,5 +90,3 @@ On my machine (RTX 2060 6 GB, Whisper on CPU, qwen2.5:7b on Ollama), with n8n 2.
 - Videos are processed one batch at a time and transcription is CPU-only, so long videos are slow.
 - It does not post anywhere. That is deliberate: a person should read the draft first.
 - Tested only on Windows with Docker Desktop.
-
-Built with AI assistance (Claude Code); the design, the testing and the decisions on what to keep are mine.
