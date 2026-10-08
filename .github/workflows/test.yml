@@ -16,7 +16,7 @@ jobs:
       - uses: actions/checkout@v4
         with:
           repository: lipereis/metis-content-strategist
-          ref: a8fca093c0092290a6a18038a73c12014f2d8f3b
+          ref: ae7b4fc7ebaaab53f45fb75f14659658a5c1dd4f
           path: metis
 
       - uses: actions/setup-python@v5
